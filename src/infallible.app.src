@@ -1,0 +1,12 @@
+{application, infallible,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { infallible_app, []}},
+  {env, []}
+ ]}.
