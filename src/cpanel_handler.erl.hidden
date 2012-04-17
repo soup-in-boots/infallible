@@ -1,0 +1,21 @@
+-module(cpanel_handler).
+-export([init/1, handle/2, info/2, terminate/2]).
+-record(state, {nothing}).
+
+init(_Protocol, Req, _Opt) ->
+    {Path, _}   = cowboy_http_req:path(Req),
+    {Method, _} = cowboy_http_req:method(Method),
+    init(Req, Method, tl(Path)).
+
+init(Req, Method, Path) ->
+    {ok, Req, #state{}}.
+
+info(Req, State) ->
+    {ok, Req, State}.
+
+handle(Req, State) ->
+    {ok, Req2} = cowboy_http_req:reply(204, [], [], Req),
+    {ok, Req, State}.
+
+terminate(Reason, State) ->
+    ok.
