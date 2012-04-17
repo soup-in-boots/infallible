@@ -1,24 +1,20 @@
 -module(infallible_protocol).
 -behaviour(cowboy_protocol).
 -export([start_link/4,init/4]).
-
-get_value(K, L) ->
-    case lists:keyfind(K, 1, L) of 
-        false -> undefined; 
-        {K, V} -> V 
-    end.
-get_value(K, L, D) ->
-    case lists:keyfind(K, 1, L) of 
-        false -> D; 
-        {K, V} -> V 
-    end.
-
+-include("infallible.hrl").
 -define(use_callback(State,H,F,D,S), 
     case catch H:F(D,S) of
-        {error, Reason}     -> die_error(Reason, State);
-        {'EXIT', Reason}    -> die_error(Reason, State);
+        {error, Reason}     -> 
+            error_logger:info_msg("[~p][~p:?use_callback] Failure Notes: ~p", [self(), ?MODULE, [{state, State}, {handler, H}, {callback, F}, {input, D}, {handler_state, S}]]),
+            die_error(Reason, State);
+        {'EXIT', Reason}    -> 
+            error_logger:info_msg("[~p][~p:?use_callback] Failure Notes: ~p", [self(), ?MODULE, [{state, State}, {handler, H}, {callback, F}, {input, D}, {handler_state, S}]]),
+            die_error(Reason, State);
         HR                  -> 
-            NewState = do_handler(State, HR),
+            NewState = case HR of
+                [_|_]   -> do_handler_batch(State, HR);
+                _       -> do_handler(State, HR)
+            end,
             main_loop(NewState)
     end).
 
@@ -44,8 +40,9 @@ start_link(ListenerPid, Socket, Transport, Opts) ->
 
 init(ListenerPid, Socket, Transport, Opts) ->
     error_logger:info_msg("[~p][~p:init] Options: ~p~n", [self(), ?MODULE, Opts]),
-    Handler         = get_value(handler, Opts, login_handler),
-    HandlerOpts     = get_value(handler_opts, Opts, []),
+    Handler         = infallible_utils:get_value(handler, Opts, login_handler),
+    error_logger:info_msg("[~p][~p:init] Using Handler: ~p~n", [self(), ?MODULE, Handler]),
+    HandlerOpts     = infallible_utils:get_value(handler_opts, Opts, []),
     HandlerState    = Handler:init(HandlerOpts),
     Transport:setopts(Socket, [{active, true}]),
     cowboy:accept_ack(ListenerPid),
@@ -101,6 +98,9 @@ do_handler(State, {upgrade, NewHandler, NewHandlerOpts}) ->
 do_handler(State, {ok, HandlerState}) ->
     State#state{handler_state = HandlerState}.
 
-die_error(Reason, State = #state{transport = T, socket = S, handler = H, handler_state = HS}) ->
+do_handler_batch(State, [])     -> State;
+do_handler_batch(State, [C|T])  -> do_handler_batch(do_handler(State, C), T).
+
+die_error(Reason, _State = #state{transport = T, socket = S, handler = H, handler_state = HS}) ->
     H:terminate(Reason, HS),
     T:close(S).
