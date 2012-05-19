@@ -6,7 +6,7 @@ init(_) ->
     {send_message, "Welcome to infallible! What is your name? ",  {get_username, #user{}}}.
 
 handle_data(Data, {confirm_password, User = #user{password = Password}}) ->
-    MD5 = infallible_utils:md5(Data),
+    MD5 = utils:md5(Data),
     error_logger:info_msg("[~p][~p:handle_data] Comparing hashes: ~p / ~p~n", [self(), ?MODULE, MD5, Password]),
     if
         MD5 == Password ->
@@ -18,14 +18,14 @@ handle_data(Data, {confirm_password, User = #user{password = Password}}) ->
             {send_message, "\r\nPasswords do not match. Please enter your password: ", {choose_password, User}}
     end;
 handle_data(Data, {choose_password, User}) ->
-    MD5 = infallible_utils:md5(Data),
+    MD5 = utils:md5(Data),
     {send_message, "\r\nPlease confirm your password: ", [{echo, off}], {
             confirm_password, 
             User#user{password = MD5}
         }};
 handle_data(Data, {confirm_username, State}) ->
-    Y = infallible_utils:re_match(Data, "ye?s?", [caseless]),
-    N = infallible_utils:re_match(Data, "no?", [caseless]),
+    Y = utils:re_match(Data, "ye?s?", [caseless]),
+    N = utils:re_match(Data, "no?", [caseless]),
     if
         Y       -> {send_message, "Choose a password: ", [{echo, off}], {choose_password, State}};
         N       -> {send_message, "What is your name? ", {get_username, State}};

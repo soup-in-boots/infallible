@@ -11,6 +11,7 @@
             error_logger:info_msg("[~p][~p:?use_callback] Failure Notes: ~p", [self(), ?MODULE, [{state, State}, {handler, H}, {callback, F}, {input, D}, {handler_state, S}]]),
             die_error(Reason, State);
         HR                  -> 
+            error_logger:info_msg("[~p][~p:?use_callback] Handler Response: ~p", [self(), ?MODULE, HR]),
             NewState = case HR of
                 [_|_]   -> do_handler_batch(State, HR);
                 _       -> do_handler(State, HR)
@@ -40,9 +41,9 @@ start_link(ListenerPid, Socket, Transport, Opts) ->
 
 init(ListenerPid, Socket, Transport, Opts) ->
     error_logger:info_msg("[~p][~p:init] Options: ~p~n", [self(), ?MODULE, Opts]),
-    Handler         = infallible_utils:get_value(handler, Opts, login_handler),
+    Handler         = utils:get_value(handler, Opts, login_handler),
     error_logger:info_msg("[~p][~p:init] Using Handler: ~p~n", [self(), ?MODULE, Handler]),
-    HandlerOpts     = infallible_utils:get_value(handler_opts, Opts, []),
+    HandlerOpts     = utils:get_value(handler_opts, Opts, []),
     HandlerState    = Handler:init(HandlerOpts),
     Transport:setopts(Socket, [{active, true}]),
     cowboy:accept_ack(ListenerPid),
@@ -93,8 +94,11 @@ do_handler(State = #state{transport = T, socket = S}, {send_message, Response, H
     T:send(S, Response),
     State#state{handler_state = HandlerState};
 do_handler(State, {upgrade, NewHandler, NewHandlerOpts}) ->
-    HS = NewHandler:init(NewHandlerOpts),
-    State#state{handler = NewHandler, handler_state = HS};
+    NewState = State#state{handler = NewHandler},
+    case NewHandler:init(NewHandlerOpts) of
+        Res = [_|_] -> do_handler_batch(NewState, Res);
+        Res         -> do_handler(NewState, Res)
+    end;
 do_handler(State, {ok, HandlerState}) ->
     State#state{handler_state = HandlerState}.
 

@@ -32,6 +32,7 @@
 -type modifier_type()   :: race | class | profession | blessing | curse | damage_over_time.
 -record(modifier, {
         id              :: atom() | list(),
+        label           :: string(),
         life            :: permanent | temporary,
         type            :: modifier_type(),
         acquired        :: undefined | integer(),
@@ -40,8 +41,20 @@
         stats           :: undefined | #stats{}
     }).
 -record(class, {
-        id              :: atom(),
-        block_prof      :: [atom()],
+        id              :: string(),
+        block_prof      :: [string()],
+        initial_stats   :: #stats{},
+        modifiers       :: [#modifier{}]
+    }).
+-record(race, {
+        id              :: string(),
+        block_class     :: [string()],
+        block_prof      :: [string()],
+        initial_stats   :: #stats{},
+        modifiers       :: [#modifier{}]
+    }).
+-record(profession, {
+        id              :: string(),
         initial_stats   :: #stats{},
         modifiers       :: [#modifier{}]
     }).
@@ -51,18 +64,22 @@
 
         level           :: integer(),
         experience      :: integer(),
-        level_weight    :: float(),
 
         stats           :: #stats{},
         equipment       :: #equipment{},
+        race            :: #race{},
+        class           :: #class{},
+        profession      :: undefined|#profession{},
+        meta            :: [{term(),term()}],
+
         modifiers       :: [{atom()|list(), #modifier{}}],
-        inventory       :: [list()]
+        inventory       :: [{string(),integer()}]
     }).
 -record(room, {
         id              :: integer(),
-        name            :: list(),
+        label           :: list(),
         description     :: list(),
-        exits           :: [{atom(), integer()}]
+        exits           :: [{string(), integer()}]
     }).
 
 -define(dirty_read(Key, Tab),

@@ -20,7 +20,7 @@ get_user(UserName) -> ?dirty_read(UserName, user).
 check_login(undefined, _) ->
     false;
 check_login(_User = #user{password = Correct}, Password) ->
-    MD5 = infallible_utils:md5(Password),
+    MD5 = utils:md5(Password),
     if
         MD5 == Correct ->
             true;
