@@ -1,5 +1,5 @@
 
--module(infallible_sup).
+-module(inf_sup).
 -behaviour(supervisor).
 
 %% API
@@ -23,9 +23,21 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
+    RoomSpec    = ?CHILD(inf_room_manager, worker),
+    EntitySpec  = ?CHILD(inf_entity_manager, worker),
+    ClientSpec  = ranch:child_spec(client_listener, 32, 
+        ranch_tcp, [{port, 1313}], 
+        inf_protocol, [{handler, login_handler}]),
+    PanelSpec   = ranch:child_spec(panel_http, 32,
+        ranch_tcp, [{port, 80}],
+        cowboy_http_protocol, [{dispatch, cpanel_handler:dispatch()}]),
     {ok, {
             {one_for_one, 5, 10}, 
             [
+                EntitySpec,
+                RoomSpec,
+                ClientSpec,
+                PanelSpec
             ]
         }}.
 

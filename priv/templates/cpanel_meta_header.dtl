@@ -1,0 +1,5 @@
+<title>Infallible Control Panel</title>
+<link rel="stylesheet" href="/static/css/default.css" />
+{% for script in scripts %}
+<script type="text/javascript" src="/static/js/{{ script }}"></script>
+{% endfor %}

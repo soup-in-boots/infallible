@@ -1,0 +1,15 @@
+<html>
+    <head>
+        {% include "cpanel_meta_header.dtl" %}
+    </head>
+    <body>
+        {% include "cpanel_header.dtl" %}
+        <div id="ctr">
+            {% include "cpanel_sidebar.dtl" %}
+            <div id="content">
+                {{ content }}
+            </div>
+        </div>
+        {% include "cpanel_footer.dtl" %}
+    </body>
+</html>

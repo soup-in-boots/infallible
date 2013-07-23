@@ -3,28 +3,31 @@
 
 %% Application callbacks
 -export([start/2, stop/1]).
--define(DISPATCH, {
-        {'_', [
-                {[<<"cpanel">>, '...'], cpanel_handler, []}
-            ]}
-    }).
+
+-define(OBJECT_MODULES, [
+        inf_user,
+        inf_entity,
+        inf_race,
+        inf_room
+    ]).
 
 %% ===================================================================
 %% Application callbacks
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
+    application:start(ranch),
     application:start(cowboy),
     application:start(mnesia),
-    cowboy:start_listener(cowboy_listener, 32, 
-        cowboy_tcp_transport, [{port, 1313}], 
-        infallible_protocol, [{handler, login_handler}]
-    ),
-    cowboy:start_listener(cowboy_listener, 32,
-        cowboy_tcp_transport, [{port, 80}],
-        cowboy_http_protocol, [{dispatch, ?DISPATCH}]
-    ),
-    infallible_sup:start_link().
+    initialize_tables(),
+    inf_sup:start_link().
 
 stop(_State) ->
     ok.
+
+initialize_tables() ->
+    lists:foreach(fun initialize_table/1, ?OBJECT_MODULES).
+
+initialize_table(Module) ->
+    Result = (catch Module:initialize_table()),
+    error_logger:info_msg("[initialize_table] ~p || ~p", [Module, Result]).

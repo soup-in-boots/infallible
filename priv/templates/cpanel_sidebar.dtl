@@ -1,0 +1,7 @@
+<div id="sidebar">
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/users">Users</a></li>
+        <li><a href="/rooms">Rooms</a></li>
+    </ul>
+</div>

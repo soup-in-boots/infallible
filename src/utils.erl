@@ -1,7 +1,7 @@
 -module(utils).
 -export([md5/1, bin_to_hex/1]).
 -export([get_value/2, get_value/3, ldef/1]).
--export([get_available_races/0, get_available_classes/0]).
+-export([get_available_races/0]).
 -export([re_match/2,re_match/3]).
 -include("infallible.hrl").
 
@@ -16,8 +16,9 @@ bin_to_hex(<<B:8/integer,Rest/binary>>, S) ->
 bin_to_hex(<<>>, S) ->
     S.
 
-get_value(K, L)     -> get_value(K, L, undefined).
-get_value(K, L, D)  ->
+get_value(K, L) -> 
+    get_value(K, L, undefined).
+get_value(K, L, D) ->
     case lists:keyfind(K, 1, L) of
         false       -> D;
         {K, V}      -> V
@@ -27,8 +28,8 @@ ldef([])            -> undefined;
 ldef([undefined|T]) -> ldef(T);
 ldef([A|_])         -> A.
 
-get_available_races()   -> mnesia:dirty_all_keys(race).
-get_available_classes() -> mnesia:dirty_all_keys(class).
+get_available_races() ->
+    [ Name || _ = #race{name = Name} <- inf_race:fetch_all() ].
 
 re_match(Subject, RE) -> re_match(Subject, RE, []).
 re_match(Subject, RE, Options) ->

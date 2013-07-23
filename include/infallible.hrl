@@ -1,85 +1,87 @@
 -ifndef(INFALLIBLE_HRL).
--record(equipment, {
-        head            :: undefined | list(),
-        neck            :: undefined | list(),
-        shoulders       :: undefined | list(),
-        torso           :: undefined | list(),
-        arms            :: undefined | list(),
-        hands           :: undefined | list(),
-        finger          :: undefined | list(),
-        waist           :: undefined | list(),
-        legs            :: undefined | list(),
-        feet            :: undefined | list(),
-        left_hand       :: undefined | list(),
-        right_hand      :: undefined | list(),
-        quiver          :: undefined | list()
-    }).
 -record(stats, {
-        health          :: float(),
-        mana            :: float(),
-        stamina         :: float(),
+        health   = 0    :: float(),     % Damage which can be taken
+        mana     = 0    :: float(),     % Energy for spells
+        stamina  = 0    :: float(),     % Energy for techniques
 
-        hrps            :: float(),
-        mrps            :: float(),
-        srps            :: float(),
+        hps      = 0    :: float(),     % Health Per Second
+        mps      = 0    :: float(),     % Mana Per Second
+        sps      = 0    :: float(),     % Stamina Per Second
 
-        strength        :: integer(),
-        dexterity       :: integer(),
-        constitution    :: integer(),
-        intelligence    :: integer(),
-        spirit          :: integer()
+        str      = 0    :: integer(),   % Strength
+        dex      = 0    :: integer(),   % Dexterity
+        con      = 0    :: integer(),   % Constitution
+        int      = 0    :: integer(),   % Intelligence
+        spr      = 0    :: integer()    % Spirit
     }).
--type modifier_type()   :: race | class | profession | blessing | curse | damage_over_time.
+-type item_type() :: consumable | wieldable | equipable | trophy.
+-type item_slot() :: head | neck | shoulders | torso | arms | hands | finger | waist | legs | feet | left_hand | right_hand | quiver.
+-record(item, {
+        id              :: integer(),
+        type            :: item_type(),
+        slot            :: undefined | item_slot(),
+        stats           :: #stats{},
+        quantity        :: integer(),
+        stack           :: boolean()
+    }).
+-record(equipment, {
+        head            :: #item{},
+        neck            :: #item{},
+        shoulders       :: #item{},
+        torso           :: #item{},
+        arms            :: #item{},
+        hands           :: #item{},
+        finger          :: #item{},
+        waist           :: #item{},
+        legs            :: #item{},
+        feet            :: #item{},
+        left_hand       :: #item{},
+        right_hand      :: #item{},
+        quiver          :: #item{}
+    }).
 -record(modifier, {
-        id              :: atom() | list(),
-        label           :: string(),
-        life            :: permanent | temporary,
-        type            :: modifier_type(),
-        acquired        :: undefined | integer(),
-        duration        :: undefined | integer(),
-        manifest        :: neutral | poison | fire | ice | electric | wind,
-        stats           :: undefined | #stats{}
-    }).
--record(class, {
-        id              :: string(),
-        block_prof      :: [string()],
-        initial_stats   :: #stats{},
-        modifiers       :: [#modifier{}]
+        name            :: string(),
+        stack           :: string(),
+        level           :: integer(),
+        duration        :: integer() | infinity,
+        stats           :: #stats{}
     }).
 -record(race, {
-        id              :: string(),
-        block_class     :: [string()],
-        block_prof      :: [string()],
-        initial_stats   :: #stats{},
-        modifiers       :: [#modifier{}]
-    }).
--record(profession, {
-        id              :: string(),
-        initial_stats   :: #stats{},
-        modifiers       :: [#modifier{}]
+        name            :: string(),
+        stats           :: #stats{},
+        buffs           :: [#modifier{}]
     }).
 -record(user, {
         username        :: list(),
         password        :: list(),
-
+        entity          :: string() | term()
+    }).
+-record(entity, {
+        id              :: string(),
+        label           :: string(),
+        description     :: string(),
         level           :: integer(),
         experience      :: integer(),
 
-        stats           :: #stats{},
-        equipment       :: #equipment{},
+        handler         :: pid(),
+        listeners       :: [pid()],
+        room            :: string() | term(),
+
+        base            :: #stats{},
         race            :: #race{},
-        class           :: #class{},
-        profession      :: undefined|#profession{},
-        meta            :: [{term(),term()}],
+        equipment       :: #equipment{},
+        active          :: #stats{},
 
         modifiers       :: [{atom()|list(), #modifier{}}],
         inventory       :: [{string(),integer()}]
     }).
+-type direction() :: north | south | east | west | up | down.
 -record(room, {
-        id              :: integer(),
-        label           :: list(),
-        description     :: list(),
-        exits           :: [{string(), integer()}]
+        id              :: string(),
+        label           :: string(),
+        description     :: string(),
+        exits           :: [{direction(), string()}],
+        occupants       :: list()
     }).
 
 -define(dirty_read(Key, Tab),
