@@ -1,0 +1,437 @@
+body {
+    margin:             0;
+    padding:            0;
+    font-family:        sans-serif;
+    font-size:          9pt;
+    background-color:   #fff0d0;
+}
+
+#header {
+    position:           relative;
+    padding:            20px;
+    border:             1px solid #ff7f15;
+    border-width:       0 0 3px 0;
+
+    color:              #ffffff;
+    text-shadow:        1px 1px #000000;
+    background-color:   #ffb115;
+    z-index:            5;
+}
+
+#header:before {
+    content:            '';
+    width:              0;
+    height:             0;
+    border-bottom:      66px solid #ff7f15;
+    border-left:        66px solid transparent;
+    z-index:            9;
+
+    position:           absolute;
+    bottom:             -3px;
+    right:              -3px;
+}
+
+#header:after {
+    content:            '';
+    width:              0;
+    height:             0;
+    border-bottom:      62px solid #fff0d0;
+    border-left:        62px solid transparent;
+    z-index:            10;
+
+    position:           absolute;
+    bottom:             -3px;
+    right:              -3px;
+}
+
+#header h1 {
+    line-height:        20px;
+    margin:             0;
+    padding:            0;
+}
+
+#ctr {
+    position:           relative;
+    padding:            0 0 20px 0;
+    z-index:            10;
+}
+
+#ctr #sidebar {
+    position:           absolute;
+    width:              155px;
+    top:                -2px;
+    padding:            20px 0 70px;
+    background-color:   #ff7f15;
+}
+
+#ctr #sidebar ul#nav {
+    list-style-type:    none;
+    margin:             0;
+    padding:            0;
+}
+
+#ctr #sidebar ul#nav a {
+    display:            block;
+    padding:            4px 0;
+
+    font-size:          12pt;
+    background-color:   #ff7f15;
+    color:              #ffffff;
+    text-shadow:        1px 1px #000000;
+    text-align:         center;
+    text-decoration:    none;
+}
+
+#ctr #sidebar ul#nav a:hover {
+    padding:            3px 0;
+    border:             1px solid #0fafaf;
+    border-width:       1px 0 1px 0;
+    border-color:       #44d7d7 #000000 #298484 #000000;
+    background-color:   #0fafaf;
+}
+
+
+
+#sidebar:after {
+    content:            '';
+    width:              0;
+    height:             0;
+    border-bottom:      50px solid #fff0d0;
+    border-left:        50px solid transparent;
+    z-index:            10;
+
+    position:           absolute;
+    bottom:             0px;
+    right:              0px;
+}
+
+#ctr #content {
+    margin:             0 20px 0 176px;
+    padding:            20px 0 0;
+}
+
+div.form.body {
+}
+
+div.form.body div.entry {
+    position:           relative;
+    min-height:         24px;
+}
+
+div.form.body div.entry>div.field {
+    border:             1px solid #ffb115;
+    border-color:       #ffffc0 #c88327 #c88327 #ffffc0;
+    background-color:   #ffe5b5;
+    padding:            5px;
+
+    color:              #333333;
+    text-shadow:        1px 1px #ffffff;
+}
+div.form.body div.entry>div.field.key {
+    position:           absolute;
+    top:                0;
+    left:               0;
+    bottom:             0;
+    width:              128px;
+    line-height:        24px;
+}
+
+div.form.body div.entry>div.field.value {
+    margin-left:        138px;
+    min-height:         24px;
+}
+
+div.form.body div.entry div.node {
+    position:           relative;
+    min-height:         24px;
+}
+
+div.form.body div.entry div.node.big {
+    min-height:         128px;
+}
+
+div.form.body div.entry div.node.object {
+    height:             auto;
+}
+
+}
+
+div.form.body>div.object>div.object.body>div.object.section {
+    margin:             0;
+}
+
+div.form.body div.object.body>div.object.section {
+    margin:             10px 0;
+}
+
+div.form.body div.object.body>div.object.section:only-child {
+    margin:             0;
+}
+
+div.form.body div.object .object.header,
+div.form.body div.object.section h4.header {
+    border:             1px solid #ffb115;
+    border-color:       #68d7d7 #057373 #057373 #68d7d7;
+    background-color:   #0fafaf;
+    padding:            5px;
+    margin:             0;
+    font-size:          13px;
+    line-height:        16px;
+
+    color:              #ffffff;
+    text-shadow:        1px 1px #333333;
+    position:           relative;
+}
+
+div.form.body>div.object>h3.object.header {
+    font-size:          16px;
+    line-height:        18px;
+    padding:            10px 5px;
+}
+
+div.form.body div.object.section:only-child h4.header {
+    display:            none;
+}
+
+div.form.body div.object.section div.section.content {
+    position:           relative;
+    margin:             0 0 0 138px;
+}
+
+div.form.body div.object.section:only-child div.section.content {
+    margin:             0;
+}
+
+div.form.body div.object.section div.section.content:after {
+    content:            '';
+    position:           absolute;
+    border:             1px solid #ffb115;
+    border-color:       #ffffc0 #c88327 #c88327 #ffffc0;
+    background-color:   #ffe5b5;
+    top:                0;
+    bottom:             0;
+    left:               -138px;
+    width:              138px;
+}
+
+div.form.body div.object.section:only-child div.section.content:after,
+div.form.body div.object.section:only-child div.section.content:before {
+    display:            none
+}
+
+div.form.body div.object .object.header:after,
+div.form.body div.object.section h4.header:after {
+    content:            '';
+    width:              0;
+    height:             0;
+    border-right:       26px solid #fff0d0;
+    border-bottom:      26px solid transparent;
+    z-index:            10;
+
+    position:           absolute;
+    top:                -1px;
+    right:              -1px;
+}
+
+div.form.body div.entry div.object .header:after {
+    border-right-color: #ffe5bf;
+}
+
+div.form.body div.object .object.header:before,
+div.form.body div.object.section h4.header:before {
+    content:            '';
+    width:              0;
+    height:             0;
+    border-right:       26px solid #68d7d7;
+    border-bottom:      26px solid transparent;
+    z-index:            9;
+
+    position:           absolute;
+    top:                0px;
+    right:              0px;
+}
+
+div.form.body>div.object>h3.object.header:before,
+div.form.body>div.object>h3.object.header:after {
+    border-right-width: 38px;
+    border-bottom-width: 38px;
+}
+
+div.form.body div.entry div.field.value input,
+div.form.body div.entry div.field.value select,
+div.form.body div.entry div.field.value textarea
+{
+    position:           absolute;
+    left:               0;
+    right:              0;
+    top:                0;
+    bottom:             0;
+    margin:             0px;
+    padding:            0 2px;
+    line-height:        22px;
+
+    border:             1px solid black;
+    border-color:       #68d7d7 #057373 #057373 #68d7d7;
+    background-color:   #0fafaf;
+
+    font-size:          10pt;
+    color:              #ffffff;
+    text-shadow:        1px 1px #333333;
+}
+
+div.form.body div.entry div.field.value select
+{
+    max-height:         25px;
+}
+
+div.form.body div.entry div.field.value select.multi {
+    max-height:         inherit;
+    margin:             0 0 0 20px;
+}
+
+div.order.button {
+    position:           absolute;
+    font-family:        monospace;
+    left:               0;
+    width:              15px;
+    height:             15px;
+    line-height:        15px;
+    font-size:          10px;
+    color:              #ffffff;
+    text-shadow:        1px 1px #333333;
+    text-align:         center;
+    border:             1px solid black;
+    border-color:       #68d7d7 #057373 #057373 #68d7d7;
+    background-color:   #0fafaf;
+    cursor:             pointer;
+}
+
+div.order.button:active {
+    border-color:       #057373 #68d7d7 #68d7d7 #057373;
+    text-shadow:        -1px -1px #333333;
+}
+
+div.order.button.up {
+    text-align:         center;
+    top:                0;
+}
+div.order.button.up:after {
+    content:            "\25b2";
+}
+
+div.order.button.down {
+    bottom:             0;
+    content:            '&darr;';
+}
+
+div.order.button.down:after {
+    content:            "\25bc";
+}
+
+div.footer {
+    position:           relative;
+    bottom:             0;
+    left:               0;
+    right:              0;
+
+    text-align:         right;
+
+    color:              #ffffff;
+    text-shadow:        1px 1px #000000;
+
+    border:             1px solid #ffb115;
+    border-color:       #ffffc0 #c88327 #c88327 #ffffc0;
+    background-color:   #ffe5b5;
+}
+
+div.form.footer {
+    padding:            10px 20px;
+}
+
+div.footer:empty {
+    display:            none;
+}
+
+div.form.footer div.submit.button {
+    display:            inline-block;
+    padding:            5px 10px;
+    border:             1px solid black;
+    border-color:       #68d7d7 #057373 #057373 #68d7d7;
+    border-radius:      10px;
+    background-color:   #0fafaf;
+
+    font-size:          14px;
+    font-weight:        bold;
+    color:              #ffffff;
+    text-shadow:        1px 1px #333333;
+    cursor:             pointer;
+}
+
+div.button.create {
+    position:           relative;
+    margin:             5px;
+    padding:            10px;
+    background-color:   #008000;
+    width:              0;
+    height:             0;
+    border-radius:      100%;
+    cursor:             pointer;
+}
+
+div.button.create:after {
+    position:           absolute;
+    font-size:          16px;
+    font-weight:        bold;
+    line-height:        20px;
+    top:                0px;
+    left:               5px;
+    content:            '+';
+    color:              #ffffff;
+    text-shadow:        1px 1px #000000;
+}
+
+#footer {
+    position:           fixed;
+    bottom:             0px;
+    left:               0px;
+    right:              0px;
+    padding:            5px;
+    line-height:        10px;
+    border-top:         3px solid #ff7f15;
+    z-index:            100;
+
+    text-align:         center;
+    font-size:          8pt;
+    background-color:   #ffb115;
+    color:              #ffffff;
+    text-shadow:        1px 1px #000000;
+}
+
+.table {
+    position: relative;
+}
+
+.table.header {
+    display:            table;
+    width:              100%;
+}
+
+.table.body {
+    display:            table;
+    width:              100%;
+}
+
+.table.row {
+    width:              100%;
+    display:            table-row;
+}
+
+.table.cell {
+    display:            table-cell;
+    width:              1%;
+    white-space:        nowrap;
+}
+
+.table.cell.controls {
+    width:              0.2%;
+}

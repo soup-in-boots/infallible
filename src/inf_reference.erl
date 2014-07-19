@@ -28,7 +28,11 @@ init() ->
               end,
     erlang:load_nif(filename:join(PrivDir, ?MODULE), 0).
 
-new(_Term) ->
+new(Term) ->
+    {ok, Ref} = do_new(Term),
+    {ok, {'$inf_reference', make_ref(), Ref}}.
+
+do_new(_Term) ->
     ?nif_stub.
 
 read_lock(_Ref) ->
@@ -43,29 +47,29 @@ write_lock(_Ref) ->
 write_unlock(_Ref) ->
     ?nif_stub.
 
+read({'$inf_reference', _ERef, Ref}) ->
+    read_lock(Ref),
+    Res = (catch do_read(Ref)),
+    read_unlock(Ref),
+    {ok, _} = Res.
+
 do_read(_Ref) ->
     ?nif_stub.
+
+write({'$inf_reference', _ERef, Ref}, Term) ->
+    write_lock(Ref),
+    Res = (catch do_write(Ref, Term)),
+    write_unlock(Ref),
+    ok = Res.
 
 do_write(_Ref, _Term) ->
     ?nif_stub.
 
-read(Ref) ->
-    read_lock(Ref),
-    Res = do_read(Ref),
-    read_unlock(Ref),
-    Res.
-
-write(Ref, Term) ->
-    write_lock(Ref),
-    Res = do_write(Ref, Term),
-    write_unlock(Ref),
-    Res.
-
-transform(Ref, Fun) ->
+transform({'$inf_reference', _ERef, Ref}, Fun) ->
     write_lock(Ref),
     Res = (catch do_transform(Ref, Fun)),
     write_unlock(Ref),
-    Res.
+    ok = Res.
 
 do_transform(Ref, Fun) ->
     {ok, Term} = do_read(Ref),

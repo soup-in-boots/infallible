@@ -13,16 +13,20 @@
     ]).
 -include("infallible.hrl").
 
-register_entity(ID, Ref) ->
-    case ets:insert_new(entity_refs, {ID, Ref}) of
-        false -> lookup(ID);
-        true -> Ref
+register_entity(ID, Object) ->
+    case ets:insert_new(entity_refs, {ID, Object}) of
+        false ->
+            io:format("Insert new failed...~n"),
+            lookup(ID);
+        true ->
+            io:format("Success...~n"),
+            Object
     end.
 
-lookup(ID) when is_list(ID) ->
+lookup(ID) ->
     case ets:lookup(entity_refs, ID) of
         [] -> undefined;
-        [{ID, Ref}] -> Ref
+        [{ID, Object}] -> Object
     end.
 
 start_link() ->
@@ -39,9 +43,20 @@ init([]) ->
 handle_call(_Call, _From, State) ->
     {reply, undefined, State}.
 
+handle_cast(super_tick, State) ->
+    Entities = ets:tab2list(entity_refs),
+    lists:foreach(fun do_super_tick/1, Entities),
+    {noreply, State};
+handle_cast(tick, State) ->
+    Entities = ets:tab2list(entity_refs),
+    lists:foreach(fun do_tick/1, Entities),
+    {noreply, State};
 handle_cast(_Cast, State) ->
     {noreply, State}.
 
+handle_info({timeout, _TRef, Entity}, State) ->
+    inf_entity:unload(Entity),
+    {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -50,3 +65,9 @@ code_change(_OldVsn, State, _Extra) ->
 
 terminate(_Reason, _State) ->
     ok.
+
+do_tick({_ID, Obj}) ->
+    Obj:call(Obj:get_value("tick", [])).
+
+do_super_tick({_ID, Obj}) ->
+    Obj:call(Obj:get_value("save", [])).

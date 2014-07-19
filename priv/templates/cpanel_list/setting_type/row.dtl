@@ -1,0 +1,7 @@
+<div class="table cell">
+    {{ object.id }}
+</div>
+<div class="table cell controls">
+    <a href="/cpanel/setting_type/{{ object.id }}/edit">Edit</a>
+</div>
+

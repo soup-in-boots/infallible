@@ -1,0 +1,15 @@
+<div id="object_form"></div>
+<script type="text/javascript">
+    var target          = document.getElementById("object_form"),
+        object_keys     = {{ object_keys }},
+        form = new JSComposer.Form({
+                "type":     "object",
+                "properties":   {
+                    "command":          {"type":"string"},
+                    "permission":       {"type":"integer"},
+                    "execution":        {"type":"string","big":true}
+                },
+                "order":    ["command","permission","execution"]
+                }, {{ object_json }});
+    form.Render(target);
+</script>

@@ -1,0 +1,6 @@
+<div class="table cell">
+    {{ object.command }}
+</div>
+<div class="table cell controls">
+    <a href="/cpanel/command/{{ object.command }}/edit">Edit</a>
+</div>

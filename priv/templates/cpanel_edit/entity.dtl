@@ -1,0 +1,7 @@
+<div id="object_form"></div>
+<script type="text/javascript">
+    var target          = document.getElementById("object_form"),
+        object_keys     = {{ object_keys }},
+        form = new JSComposer.Form({"$ref":"http://infallible.net/static/schema/infallible#/definitions/entity"}, {{ object_json }});
+    form.Render(target);
+</script>

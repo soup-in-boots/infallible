@@ -1,0 +1,35 @@
+<div class="table">
+    <div class="table cap">
+        {{ type }} (<a href="/cpanel/{{ type }}/new">New</a>)
+    </div>
+    <div class="table.header">
+        <div class="table header row">
+            {% if type == 'user' %}
+            {% include "cpanel_list/user/header.dtl" %}
+            {% elif type == 'room' %}
+            {% include "cpanel_list/room/header.dtl" %}
+            {% elif type == 'entity' %}
+            {% include "cpanel_list/entity/header.dtl" %}
+            {% elif type == 'command' %}
+            {% include "cpanel_list/command/header.dtl" %}
+            {% elif type == 'setting' %}
+            {% include "cpanel_list/setting/header.dtl" %}
+            {% elif type == 'setting_type' %}
+            {% include "cpanel_list/setting_type/header.dtl" %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="table body">
+        {% for object in objects %}
+        <div class="table row">
+            {% if type == 'user' %}{% include "cpanel_list/user/row.dtl" %}
+            {% elif type == 'room' %}{% include "cpanel_list/room/row.dtl" %}
+            {% elif type == 'entity' %}{% include "cpanel_list/entity/row.dtl" %}
+            {% elif type == 'command' %}{% include "cpanel_list/command/row.dtl" %}
+            {% elif type == 'setting' %}{% include "cpanel_list/setting/row.dtl" %}
+            {% elif type == 'setting_type' %}{% include "cpanel_list/setting_type/row.dtl" %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>

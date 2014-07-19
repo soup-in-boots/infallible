@@ -4,6 +4,7 @@
 
         initialize_table/0,
         fetch_all/0,
+        get_labels/0,
         fetch/1,
         write/1,
         delete/1
@@ -89,11 +90,15 @@ fetch_all() ->
     ?dirty_read_all(race).
 
 fetch(Name) ->
-    ?dirty_read(unicode:characters_to_list(Name), race).
+    ?dirty_read(unicode:characters_to_binary(Name), race).
+
+get_labels() ->
+    Keys = [ unicode:characters_to_binary(Key) || Key <- mnesia:dirty_all_keys(race) ],
+    lists:zip(Keys, Keys).
 
 write(Race = #race{name = Name}) ->
     delete(Name),
-    mnesia:dirty_write(Race#race{name = unicode:characters_to_list(Name)}).
+    mnesia:dirty_write(Race#race{name = unicode:characters_to_binary(Name)}).
 
 delete(Name) ->
-    mnesia:dirty_delete(race, unicode:characters_to_list(Name)).
+    mnesia:dirty_delete(race, unicode:characters_to_binary(Name)).

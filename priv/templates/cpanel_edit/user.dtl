@@ -1,0 +1,16 @@
+<div id="object_form"></div>
+<script type="text/javascript">
+    var target          = document.getElementById("object_form"),
+        object_keys     = {{ object_keys }},
+        form = new JSComposer.Form({
+                "type":     "object",
+                "fields":   {
+                    "username":         {"type":"text"},
+                    "password":         {"type":"password"},
+                    "confirm_password": {"type":"password"},
+                    "entity":           {"type":"select", "options": object_keys.entity}
+                },
+                "order":    ["username","entity","password","confirm_password"]
+                }, {{ object_json }});
+    form.Render(target);
+</script>

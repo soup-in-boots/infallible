@@ -1,7 +1,10 @@
 <div id="sidebar">
     <ul id="nav">
-        <li><a href="/">Home</a></li>
-        <li><a href="/users">Users</a></li>
-        <li><a href="/rooms">Rooms</a></li>
+        <li><a href="/cpanel/">Home</a></li>
+        <li><a href="/cpanel/user">Users</a></li>
+        <li><a href="/cpanel/room">Rooms</a></li>
+        <li><a href="/cpanel/entity">Entity</a></li>
+        <li><a href="/cpanel/command">Command</a></li>
+        <li><a href="/cpanel/setting">Setting</a></li>
     </ul>
 </div>

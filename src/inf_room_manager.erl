@@ -16,15 +16,19 @@
     ]).
 -include("infallible.hrl").
 
-lookup(ID) when is_list(ID) ->
+lookup(ID) ->
     case ets:lookup(room_refs, ID) of
         [] -> undefined;
         [{ID, Ref}] -> Ref
     end.
 
-register_room(ID, Ref) ->
-    case ets:insert_new(room_refs, {ID, Ref}) of
-        true -> Ref;
+register_room(ID, Room) ->
+    VM = inf_world:vm(),
+    G = erlv8_vm:global(VM),
+    G:set_value("room", Room),
+    NewRoom = G:get_value("room"),
+    case ets:insert_new(room_refs, {ID, NewRoom}) of
+        true -> NewRoom;
         false -> lookup(ID)
     end.
 
@@ -42,6 +46,14 @@ init([]) ->
 handle_call(_Call, _From, State) ->
     {reply, undefined, State}.
 
+handle_cast(tick, State) ->
+    Rooms = ets:tab2list(room_refs),
+    lists:foreach(fun do_tick/1, Rooms),
+    {noreply, State};
+handle_cast(super_tick, State) ->
+    Rooms = ets:tab2list(room_refs),
+    lists:foreach(fun do_super_tick/1, Rooms),
+    {noreply, State};
 handle_cast(_Cast, State) ->
     {noreply, State}.
 
@@ -53,3 +65,6 @@ code_change(_OldVsn, State, _Extra) ->
 
 terminate(_Reason, _State) ->
     ok.
+
+do_tick({_ID, Room}) -> Room:call(Room:get_value("tick"), []).
+do_super_tick({_ID, Room}) -> inf_room:write(Room).

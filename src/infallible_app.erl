@@ -6,9 +6,10 @@
 
 -define(OBJECT_MODULES, [
         inf_user,
-        inf_entity,
         inf_race,
-        inf_room
+        inf_command,
+        inf_settings,
+        inf_world
     ]).
 
 %% ===================================================================
@@ -30,4 +31,4 @@ initialize_tables() ->
 
 initialize_table(Module) ->
     Result = (catch Module:initialize_table()),
-    error_logger:info_msg("[initialize_table] ~p || ~p", [Module, Result]).
+    io:format("[initialize_table] ~p || ~p~n", [Module, Result]).

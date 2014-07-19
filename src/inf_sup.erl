@@ -23,19 +23,25 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    RoomSpec    = ?CHILD(inf_room_manager, worker),
+    WorldSpec   = ?CHILD(inf_world, worker),
     EntitySpec  = ?CHILD(inf_entity_manager, worker),
+    RoomSpec    = ?CHILD(inf_room_manager, worker),
+    TickSpec    = ?CHILD(inf_tick_manager, worker),
+    CommandSpec = ?CHILD(inf_command_manager, worker),
     ClientSpec  = ranch:child_spec(client_listener, 32, 
         ranch_tcp, [{port, 1313}], 
         inf_protocol, [{handler, login_handler}]),
     PanelSpec   = ranch:child_spec(panel_http, 32,
         ranch_tcp, [{port, 80}],
-        cowboy_http_protocol, [{dispatch, cpanel_handler:dispatch()}]),
+        cowboy_protocol, [{env, [{dispatch, cpanel_handler:dispatch()}]}]),
     {ok, {
             {one_for_one, 5, 10}, 
             [
+                WorldSpec,
                 EntitySpec,
                 RoomSpec,
+                TickSpec,
+                CommandSpec,
                 ClientSpec,
                 PanelSpec
             ]

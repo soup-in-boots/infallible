@@ -1,0 +1,6 @@
+<div class="table cell">
+    {{ object.label }}
+</div>
+<div class="table cell controls">
+    <a href="/cpanel/entity/{{ object.id }}/edit">Edit</a>
+</div>

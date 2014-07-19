@@ -16,6 +16,11 @@
     }).
 -type item_type() :: consumable | wieldable | equipable | trophy.
 -type item_slot() :: head | neck | shoulders | torso | arms | hands | finger | waist | legs | feet | left_hand | right_hand | quiver.
+-record(command, {
+        command         :: string(),
+        permission      :: integer(),
+        execution       :: string() | binary()
+    }).
 -record(item, {
         id              :: integer(),
         type            :: item_type(),
@@ -70,6 +75,7 @@
         base            :: #stats{},
         race            :: #race{},
         equipment       :: #equipment{},
+        active_max      :: #stats{},
         active          :: #stats{},
 
         modifiers       :: [{atom()|list(), #modifier{}}],
@@ -89,11 +95,24 @@
         []      -> undefined;
         [Val]   -> Val
     end).
+-record(object, {
+        id,
+        type,
+        json
+    }).
+-record(setting, {
+        id              :: string(),
+        type_desc       :: term(),
+        value           :: term()
+    }).
 
 -define(dirty_read_all(Tab),
     lists:map(
             fun(Key) -> ?dirty_read(Key,Tab) end, 
             mnesia:dirty_all_keys(Tab)
         )).
+
+-define(TICK, 5000).
+-define(SUPER_TICK, 300000).
 
 -endif.

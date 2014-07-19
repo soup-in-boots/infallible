@@ -1,0 +1,19 @@
+function() {
+    var message     = [],
+        label       = this.label,
+        room        = Room.Find(this.room),
+        occ         = room.occupants;
+        
+    for (var i = 0; i < arguments.length; ++i) {
+        message.push(arguments[i]);
+    }
+    message = message.join(" ");
+        
+    for (var i = 0; i < occ.length; ++i) {
+        if (this.compare(occ[i])) {
+            this.notify("You say \"" + message + "\"");
+        } else {
+            occ[i].notify(label + " says \"" + message + "\"");
+        }
+    }
+}

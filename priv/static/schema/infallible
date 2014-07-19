@@ -1,0 +1,116 @@
+{
+    "$schema":"http://json-schema.org/draft-04/schema#",
+    "id":"http://infallible.net/static/schema/infallible#",
+    "type":"object",
+    "properties":{
+        "entities": {
+            "type":"array",
+            "items":{
+                "type":"object",
+                "oneOf":[{"$ref":"#/definitions/entity"}]
+            }
+        },
+        "rooms": {
+            "type":"array",
+            "items":{
+                "type":"object",
+                "oneOf": [{"$ref":"#/definitions/room"}]
+            }
+        }
+    },
+    "definitions": {
+        "object_id":        {"type":"string","format":"[a-z_]+"},
+        "command_id":       {"type":"string","format":"[a-z]+"},
+        "room_id":          {"title":"Room ID","oneOf":[{"$ref":"#/definitions/object_id"}]},
+        "race_id":          {"title":"Race ID","oneOf":[{"$ref":"#/definitions/object_id"}]},
+        "entity_id":        {"title":"Entity ID", "oneOf":[{"$ref":"#/definitions/object_id"}]},
+        "entity_select":    {"title":"Entity","oneOf":[{"$ref":"#/definitions/entity_id"}]},
+        "room_select":      {"title":"Room","oneOf":[{"$ref":"#/definitions/room_id"}]},
+        "race_select":      {"title":"Race","oneOf":[{"$ref":"#/definitions/race_id"}]},
+        "command_select":   {"title":"Command","oneOf":[{"$ref":"#/definitions/command_id"}]},
+        "setting_type":     {"enum":["room","entity","command","race","string","integer","number"]},
+        "setting":          {
+            "type":             "object",
+            "properties":       {
+                "id":               {"title":"ID", "type":"string"},
+                "type":             {"title":"Type", "oneOf":[{"$ref":"#/definitions/setting_type"}]},
+                "value":            {
+                    "title":            "Value",
+                    "oneOf":            [
+                        {"title":"Integer","type":"integer"},
+                        {"title":"Number","type":"number"},
+                        {"title":"String","type":"string"},
+                        {"title":"Room","$ref":"#/definitions/room_select"},
+                        {"title":"Entity","$ref":"#/definitions/entity_select"},
+                        {"title":"Race","$ref":"#/definitions/race_select"},
+                        {"title":"Command","$ref":"#/definitions/command_select"}
+                    ]
+                }
+            }
+        },
+        "exit":             {
+            "type":             "object",
+            "additionalProperties": {
+                "north":            {"title":"North","oneOf":[{"$ref":"#/definitions/room_select"}]},
+                "south":            {"title":"South","oneOf":[{"$ref":"#/definitions/room_select"}]},
+                "east":             {"title":"East","oneOf":[{"$ref":"#/definitions/room_select"}]},
+                "west":             {"title":"West","oneOf":[{"$ref":"#/definitions/room_select"}]},
+                "up":               {"title":"Up","oneOf":[{"$ref":"#/definitions/room_select"}]},
+                "down":             {"title":"Down","oneOf":[{"$ref":"#/definitions/room_select"}]}
+            }
+        },
+        "room":             {
+            "title":            "Room",
+            "type":             "object",
+            "properties":       {
+                "id":               {"$ref":"#/definitions/room_id"},
+                "label":            {"type":"string"},
+                "description":      {"type":"string"},
+                "exits":            {"$ref":"#/definitions/exit"},
+                "occupants":        {
+                    "type":             "array",
+                    "items":            {"$ref":"#/definitions/entity_id"},
+                    "uniqueItems":      true
+                }
+            }
+        },
+        "entity":           {
+            "title":            "Entity",
+            "type":             "object",
+            "properties":       {
+                "id":               {"$ref":"#/definitions/entity_id"},
+                "label":            {"title":"Label","type":"string"},
+                "description":      {"title":"Description","type":"string","big":true},
+                "level":            {"title":"Level","type":"integer","minimum":1,"maximum":100},
+                "experience":       {"title":"Experience","type":"integer","minimum":0},
+                "handler":          {"type":"null"},
+                "room":             {"$ref":"#/definitions/room_select"},
+                "base":             {"title":"Base Stats", "oneOf":[{"$ref":"#/definitions/stats"}]},
+                "active":           {"$ref":"#/definitions/stats"},
+                "active_max":       {"$ref":"#/definitions/stats"},
+                "race":             {"$ref":"#/definitions/race_select"},
+                "equipment":        {"title":"Equipment","type":"null"},
+                "modifiers":        {"type":"null"},
+                "inventory":        {"title":"Inventory","type":"null"}
+            }
+        },
+        "stats":            {
+            "type":             "object",
+            "properties":       {
+                "health":           {"title":"Health", "type":"integer","minimum":0},
+                "mana":             {"title":"Mana", "type":"integer","minimum":0},
+                "stamina":          {"title":"Stamina", "type":"integer","minimum":0},
+
+                "hps":              {"title":"Health Regeneration", "type":"number","minimum":0.0},
+                "mps":              {"title":"Mana Regeneration", "type":"number","minimum":0.0},
+                "sps":              {"title":"Stamina Regeneration", "type":"number","minimum":0.0},
+
+                "str":              {"title":"Strength", "type":"integer","minimum":0,"maximum":255},
+                "dex":              {"title":"Dexterity", "type":"integer","minimum":0,"maximum":255},
+                "con":              {"title":"Constitution", "type":"integer","minimum":0,"maximum":255},
+                "int":              {"title":"Intelligence", "type":"integer","minimum":0,"maximum":255},
+                "spr":              {"title":"Spirit", "type":"integer","minimum":0,"maximum":255}
+            }
+        }
+    }
+}

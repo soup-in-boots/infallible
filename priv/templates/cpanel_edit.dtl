@@ -1,0 +1,13 @@
+{% if type == "user" %}
+    {% include "cpanel_edit/user.dtl" %}
+{% elif type == "room" %}
+    {% include "cpanel_edit/room.dtl" %}
+{% elif type == "entity" %}
+    {% include "cpanel_edit/entity.dtl" %}
+{% elif type == "command" %}
+    {% include "cpanel_edit/command.dtl" %}
+{% elif type == "setting" %}
+    {% include "cpanel_edit/setting.dtl" %}
+{% elif type == "setting_type" %}
+    {% include "cpanel_edit/setting_type.dtl" %}
+{% endif %}

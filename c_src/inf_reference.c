@@ -22,7 +22,7 @@ static ERL_NIF_TERM inf_reference_write(ErlNifEnv* env, int argc, const ERL_NIF_
 
 static ErlNifFunc nif_funcs[] =
 {
-    {"new", 1, inf_reference_new},
+    {"do_new", 1, inf_reference_new},
     {"read_lock", 1, inf_reference_read_lock},
     {"read_unlock", 1, inf_reference_read_unlock},
     {"write_lock", 1, inf_reference_write_lock},

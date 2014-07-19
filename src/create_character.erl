@@ -9,59 +9,31 @@ init(Opts, Client) ->
     Races   = utils:get_available_races(),
     error_logger:error_msg("Got races:"),
     error_logger:error_report([{races, Races}]),
-    inf_protocol:send_message(Client, ["\nWhat is your race? [", string:join(Races, ", "), "] "], [{echo, on}]),
+    Client2 = inf_protocol:send_message(Client, ["\nWhat is your race? [", [ [Race, ","] || Race <- Races ], "] "], [{echo, on}]),
     error_logger:error_msg("Requested selection."),
-    {ok, {select_race, User}, Client}.
+    {ok, {select_race, User}, Client2}.
 
 handle_data(Data, {thinking, User}, Client) ->
-    inf_protocol:send_message(Client, "Huh? Sorry, give me a moment. I have to mull this over. "),
-    {ok, {thinking, User}, Client};
+    Client2 = inf_protocol:send_message(Client, "Huh? Sorry, give me a moment. I have to mull this over. "),
+    {ok, {thinking, User}, Client2};
 handle_data(Data, {select_race, User = #user{username = Name}}, Client) ->
-    Races = inf_race:fetch_all(),
-    case lists:keyfind(Data, #race.name, Races) of
-        Race when is_record(Race, race) -> 
+    case inf_race:fetch(Data) of
+        undefined ->
+            Client2 = inf_protocol:send_message(Client, "Don't be a smartass. Try again.\n"),
+            {ok, {select_race, User}, Client2};
+        _Race -> 
             %% 1. Finish filling out user information and save
-            Room = inf_room:fetch("default"),
-            EntityID = uuid:to_string(uuid:v4()),
-            Entity = #entity{
-                id              = EntityID,
-                label           = Name,
-                description     = "A nondescript being.",
-                room            = Room,
-                listeners       = [],
-
-                level           = 1,
-                experience      = 0,
-
-                base            = #stats{
-                    health          = 0,
-                    mana            = 0,
-                    stamina         = 0,
-
-                    hps             = 0,
-                    mps             = 0,
-                    sps             = 0,
-
-                    str             = 0,
-                    dex             = 0,
-                    con             = 0,
-                    int             = 0,
-                    spr             = 0
-                },
-                race            = Race,
-                equipment       = #equipment{},
-                active          = undefined,
-
-                modifiers       = [],
-                inventory       = []
-            },
+            {ok, Entity} = inf_entity:new(),
+            Entity:set_value("race", Data),
+            Entity:set_value("label", Name),
             NewUser = User#user{
                 entity = Entity
             },
 
             error_logger:error_msg("Saving user and entity."),
             inf_user:write(NewUser),
-            inf_entity:write(Entity),
+            Entity2     = inf_entity:update(undefined, inf_entity:to_json(Entity)),
+            EntityID    = Entity2:get_value("id"),
 
             %% 2. Prepare and submit closing statements
             Messages = [
@@ -71,10 +43,7 @@ handle_data(Data, {select_race, User = #user{username = Name}}, Client) ->
             inf_protocol:send_message(Client, Messages),
 
             %% 3. Upgrade to standard client interface
-            {upgrade, client_handler, [{entity, EntityID}], Client};
-        false ->
-            inf_protocol:send_message(Client, "Don't be a smartass. Try again.\n"),
-            {ok, {select_race, User}, Client}
+            {upgrade, client_handler, [{entity, EntityID}], Client}
     end;
 handle_data(Data, State, Client) ->
     error_logger:info_msg("[~p][~p:handle_info] Unhandled Info: ~p~n", [self(), ?MODULE, Data]),
